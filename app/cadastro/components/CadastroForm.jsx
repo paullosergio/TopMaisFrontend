@@ -27,11 +27,36 @@ export default function CadastroForm() {
     uf: '',
     pix: '',
     pixType: '',
+    bank: '',
+    agency: '',
+    accountNumber: '',
+    accountType: '', // "corrente" ou "poupança"
   }
   const [formValues, setFormValues] = useState(initial)
   const [errors, setErrors] = useState({})
   const [successMessage, setSuccessMessage] = useState('')
   const [submitting, setSubmitting] = useState(false)
+
+  const requiredFields = [
+    'name',
+    'email',
+    'phone',
+    'cpf',
+    'rg',
+    'birthDate',
+    'zipCode',
+    'city',
+    'number',
+    'street',
+    'neighborhood',
+    'uf',
+    'pix',
+    'pixType',
+    'bank',
+    'agency',
+    'accountNumber',
+    'accountType',
+  ]
 
   const handleChange = ({ target: { name, value } }) => {
     let normalized = value
@@ -49,6 +74,11 @@ export default function CadastroForm() {
       zipCode: v => (v && v.length !== 8 ? 'CEP inválido' : ''),
       birthDate: v => validateBirthDate(v),
       name: v => (v && v.trim().length < 3 ? 'Nome muito curto' : ''),
+      bank: v => (v && v.trim().length < 2 ? 'Informe o nome do banco' : ''),
+      agency: v => (v && !/^\d{4,5}$/.test(v) ? 'Agência inválida' : ''),
+      accountNumber: v => (v && !/^\d{5,10}-?\d?$/.test(v) ? 'Conta inválida' : ''),
+      accountType: v =>
+        v && !['corrente', 'poupança'].includes(v.toLowerCase()) ? 'Tipo inválido' : '',
     }
 
     const error =
@@ -109,22 +139,6 @@ export default function CadastroForm() {
   }
 
   const hasAnyError = Object.values(errors || {}).some(Boolean)
-  const requiredFields = [
-    'name',
-    'email',
-    'phone',
-    'cpf',
-    'rg',
-    'birthDate',
-    'zipCode',
-    'city',
-    'number',
-    'street',
-    'neighborhood',
-    'uf',
-    'pix',
-    'pixType',
-  ]
   const hasEmptyRequired = requiredFields.some(f => String(formValues[f] ?? '').trim() === '')
   const disableSubmit = submitting || hasAnyError || hasEmptyRequired
 
@@ -214,6 +228,54 @@ export default function CadastroForm() {
           error={errors.birthDate}
         />
 
+        <InputField
+          label="Banco"
+          id="bank"
+          name="bank"
+          value={formValues.bank}
+          onChange={handleChange}
+          placeholder="Nome do banco"
+          error={errors.bank}
+        />
+        <InputField
+          label="Agência"
+          id="agency"
+          name="agency"
+          value={formValues.agency}
+          onChange={handleChange}
+          placeholder="0000"
+          mask="0000"
+          error={errors.agency}
+        />
+        <InputField
+          label="Número da Conta"
+          id="accountNumber"
+          name="accountNumber"
+          value={formValues.accountNumber}
+          onChange={handleChange}
+          placeholder="Conta com o digito verificador"
+          error={errors.accountNumber}
+        />
+        <div className="flex flex-col">
+          <label htmlFor="accountType" className="block text-slate-800 font-semibold mb-1">
+            Tipo de Conta
+          </label>
+          <select
+            id="accountType"
+            name="accountType"
+            value={formValues.accountType}
+            onChange={handleChange}
+            className="w-full text-black rounded-lg border border-stone-600/30 px-4 py-2 outline-none focus:ring-2 focus:ring-orange-200"
+          >
+            <option value="">Selecione o tipo</option>
+            <option value="corrente">Corrente</option>
+            <option value="poupança">Poupança</option>
+          </select>
+          {errors.accountType && (
+            <p className="mt-1 text-sm text-amber-800">{errors.accountType}</p>
+          )}
+        </div>
+
         <MaskedInputField
           label="CEP"
           id="zipCode"
@@ -223,6 +285,16 @@ export default function CadastroForm() {
           onAccept={v => handleChange({ target: { name: 'zipCode', value: v } })}
           placeholder="00000-000"
           error={errors.zipCode}
+        />
+
+        <InputField
+          label="Número"
+          id="number"
+          name="number"
+          value={formValues.number}
+          onChange={handleChange}
+          placeholder="Ex.: 123"
+          error={errors.number}
         />
         <InputField
           label="UF"
@@ -244,15 +316,6 @@ export default function CadastroForm() {
           disabled
           placeholder="Cidade"
           error={errors.city}
-        />
-        <InputField
-          label="Número"
-          id="number"
-          name="number"
-          value={formValues.number}
-          onChange={handleChange}
-          placeholder="Ex.: 123"
-          error={errors.number}
         />
 
         <InputField
