@@ -37,6 +37,10 @@
       "react": "recommended"
     }
   },
+  "editor": {
+  "formatOnSave": true,
+  "organizeImportsOnSave": true
+},
   "assist": {
     "actions": {
       "source": {
