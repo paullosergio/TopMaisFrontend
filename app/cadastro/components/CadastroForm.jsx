@@ -1,21 +1,22 @@
 'use client'
 import { useState } from 'react'
+import {
+	detectPixFromValue,
+	isValidCPFChecksum,
+	isValidEmail,
+	toIsoDate,
+	validateBirthDate,
+	validateForm,
+} from '../utils/validation'
 import InputField from './InputField'
 import MaskedInputField from './MaskedInputField'
-import {
-  isValidEmail,
-  isValidCPFChecksum,
-  toIsoDate,
-  detectPixFromValue,
-  validateBirthDate,
-  validateForm,
-} from '../utils/validation'
 
 export default function CadastroForm() {
   const initial = {
     name: '',
     email: '',
     phone: '',
+	password: '',
     cpf: '',
     rg: '',
     birthDate: '',
@@ -56,6 +57,7 @@ export default function CadastroForm() {
     'agency',
     'accountNumber',
     'accountType',
+	'password',
   ]
 
   const handleChange = ({ target: { name, value } }) => {
@@ -70,6 +72,7 @@ export default function CadastroForm() {
     const validations = {
       email: v => (v && !isValidEmail(v) ? 'E-mail inválido' : ''),
       cpf: v => (v && !isValidCPFChecksum(v) ? 'CPF inválido' : ''),
+	  password: v => (v && v.length < 6 ? 'Senha muito curta' : ''),
       phone: v => (v && v.length < 11 ? 'Telefone incompleto' : ''),
       zipCode: v => (v && v.length !== 8 ? 'CEP inválido' : ''),
       birthDate: v => validateBirthDate(v),
@@ -189,6 +192,18 @@ export default function CadastroForm() {
           error={errors.email}
         />
 
+		<InputField
+          label="Senha"
+          id="password"
+          name="password"
+          type="password"
+          value={formValues.password}
+          onChange={handleChange}
+          placeholder="********"
+          error={errors.password}
+        />
+
+
         <InputField
           label="Chave PIX"
           id="pix"
@@ -198,6 +213,7 @@ export default function CadastroForm() {
           placeholder="E-mail, CPF, telefone ou chave aleatória"
           error={errors.pix}
         />
+
         <InputField
           label="Tipo Chave PIX"
           id="pixType"

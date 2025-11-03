@@ -10,7 +10,7 @@ export default function Home() {
             </div>
             <span className="text-white text-xl font-bold">Top Mais Top</span>
           </div>
-          <nav className="hidden md:flex space-x-8">
+          {/* <nav className="hidden md:flex space-x-8">
             <a href="#sobre" className="text-white/90 hover:text-white transition-colors">
               Sobre
             </a>
@@ -20,7 +20,7 @@ export default function Home() {
             <a href="#contato" className="text-white/90 hover:text-white transition-colors">
               Contato
             </a>
-          </nav>
+          </nav> */}
         </div>
       </header>
 
@@ -167,12 +167,11 @@ export default function Home() {
             <p className="text-xl text-white/90 mb-8">
               Junte-se a milhares de clientes satisfeitos
             </p>
-            <button
-              type="button"
+            <a href="/cadastro"
               className="bg-amber-800 text-orange-200 font-bold px-12 py-4 rounded-xl hover:bg-amber-700 transition-all duration-300 transform hover:scale-105 shadow-lg text-lg border border-stone-600/30"
             >
               Começar Agora
-            </button>
+            </a>
           </div>
         </div>
       </main>
