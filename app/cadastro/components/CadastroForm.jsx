@@ -1,12 +1,12 @@
 'use client'
 import { useState } from 'react'
+import { createPartner } from '../controllers/partner'
 import {
   detectPixFromValue,
   isValidCPFChecksum,
   isValidEmail,
   toIsoDate,
   validateBirthDate,
-  validateForm,
 } from '../utils/validation'
 import InputField from './InputField'
 import MaskedInputField from './MaskedInputField'
@@ -38,6 +38,12 @@ export default function CadastroForm() {
 
   const totalSteps = 3
 
+  const stepFields = {
+    1: ['name', 'phone', 'cpf', 'birthDate', 'email', 'password'],
+    2: ['zipCode', 'number'],
+    3: ['pix'],
+  }
+
   const handleChange = ({ target: { name, value } }) => {
     let normalized = value
     if (['phone', 'cpf', 'zipCode', 'number'].includes(name)) normalized = value.replace(/\D/g, '')
@@ -53,6 +59,8 @@ export default function CadastroForm() {
       zipCode: v => (v && v.length !== 8 ? 'CEP inválido' : ''),
       birthDate: v => validateBirthDate(v),
       name: v => (v && v.trim().length < 3 ? 'Nome muito curto' : ''),
+      number: v => (!v ? 'Número obrigatório' : ''),
+      pix: v => (!v ? 'Chave PIX obrigatória' : ''),
     }
 
     const error = validations[name]?.(normalized) || ''
@@ -93,31 +101,81 @@ export default function CadastroForm() {
     setFormValues(prev => ({ ...prev, pixType: detected.type }))
   }
 
+  const validateStep = stepNumber => {
+    const requiredFields = stepFields[stepNumber]
+    const newErrors = {}
+
+    for (const field of requiredFields) {
+      const value = formValues[field]
+      if (!value) newErrors[field] = 'Campo obrigatório'
+      else {
+        const validations = {
+          email: v => !isValidEmail(v) && 'E-mail inválido',
+          cpf: v => !isValidCPFChecksum(v) && 'CPF inválido',
+          password: v => v.length < 6 && 'Senha muito curta',
+          phone: v => v.length < 11 && 'Telefone incompleto',
+          zipCode: v => v.length !== 8 && 'CEP inválido',
+          birthDate: v => validateBirthDate(v),
+          name: v => v.trim().length < 3 && 'Nome muito curto',
+        }
+        const error = validations[field]?.(value)
+        if (error) newErrors[field] = error
+      }
+    }
+
+    setErrors(prev => ({ ...prev, ...newErrors }))
+    return Object.keys(newErrors).length === 0
+  }
+
+  const handleNext = () => {
+    if (validateStep(step)) setStep(s => Math.min(totalSteps, s + 1))
+  }
+
   const handleSubmit = async e => {
     e.preventDefault()
-    const errs = validateForm(formValues)
-    setErrors(errs)
-    if (Object.keys(errs).length) return
+    if (!validateStep(3)) return
+
     setSubmitting(true)
     try {
       const payload = { ...formValues, birthDate: toIsoDate(formValues.birthDate) }
-      console.log('📦 Payload final:', payload)
-      await new Promise(res => setTimeout(res, 800))
-      setSuccessMessage('Cadastro realizado com sucesso!')
-      //   setFormValues(initial)
-      setStep(1)
+
+      const data = await createPartner(payload)
+
+      if (data.success) {
+        setSuccessMessage('Cadastro realizado com sucesso!')
+        setStep(1)
+        setFormValues(initial) // opcional
+      }
+
+      else if (data.errors) {
+        const mappedErrors = Object.entries(data.errors).reduce((acc, [key, val]) => {
+          acc[key] = Array.isArray(val) ? val.join(', ') : val
+          return acc
+        }, {})
+        setErrors(mappedErrors)
+      }
+
+      else if (data.error) {
+        setErrors({ global: data.error })
+      }
+    } catch (error) {
+      console.error('❌ Erro no envio:', error)
+      setErrors({ global: error.message || 'Erro inesperado. Tente novamente.' })
     } finally {
       setSubmitting(false)
       setTimeout(() => setSuccessMessage(''), 3000)
+      setTimeout(() => setErrors(''), 3000)
     }
   }
 
-  const nextStep = () => setStep(s => Math.min(totalSteps, s + 1))
-  const prevStep = () => setStep(s => Math.max(1, s - 1))
+  const isStepValid = step => {
+    const requiredFields = stepFields[step]
+    return requiredFields.every(f => formValues[f] && !errors[f])
+  }
 
   return (
     <form
-      onSubmit={handleSubmit}
+      onSubmit={e => e.preventDefault()}
       className="bg-white rounded-2xl p-6 md:p-8 shadow-xl border border-stone-600/20 max-w-2xl mx-auto"
     >
       <h2 className="text-xl font-bold mb-6 text-center text-amber-800">
@@ -161,7 +219,7 @@ export default function CadastroForm() {
             label="Data de nascimento"
             name="birthDate"
             mask="00/00/0000"
-			unmask={false} 
+            unmask={false}
             value={formValues.birthDate}
             onAccept={v => handleChange({ target: { name: 'birthDate', value: v } })}
             error={errors.birthDate}
@@ -203,28 +261,10 @@ export default function CadastroForm() {
             onChange={handleChange}
             error={errors.number}
           />
-          <InputField
-            label="Rua"
-            name="street"
-            value={formValues.street}
-            onChange={handleChange}
-            disabled
-          />
-          <InputField
-            label="Bairro"
-            name="neighborhood"
-            value={formValues.neighborhood}
-            onChange={handleChange}
-            disabled
-          />
-          <InputField
-            label="Cidade"
-            name="city"
-            value={formValues.city}
-            onChange={handleChange}
-            disabled
-          />
-          <InputField label="UF" name="uf" value={formValues.uf} onChange={handleChange} disabled />
+          <InputField label="Rua" name="street" value={formValues.street} disabled />
+          <InputField label="Bairro" name="neighborhood" value={formValues.neighborhood} disabled />
+          <InputField label="Cidade" name="city" value={formValues.city} disabled />
+          <InputField label="UF" name="uf" value={formValues.uf} disabled />
         </div>
       )}
 
@@ -252,7 +292,7 @@ export default function CadastroForm() {
         {step > 1 && (
           <button
             type="button"
-            onClick={prevStep}
+            onClick={() => setStep(step - 1)}
             className="cursor-pointer bg-stone-300 text-slate-800 px-6 py-2 rounded-xl"
           >
             Voltar
@@ -262,22 +302,30 @@ export default function CadastroForm() {
         {step < totalSteps ? (
           <button
             type="button"
-            onClick={nextStep}
-            className="cursor-pointer ml-auto bg-amber-800 text-orange-100 font-bold px-6 py-3 rounded-xl hover:bg-amber-700 transition-all"
+            onClick={handleNext}
+            disabled={!isStepValid(step)}
+            className={`cursor-pointer ml-auto font-bold px-6 py-3 rounded-xl transition-all ${
+              isStepValid(step)
+                ? 'bg-amber-800 text-orange-100 hover:bg-amber-700'
+                : 'bg-gray-400 text-gray-200 cursor-not-allowed'
+            }`}
           >
             Próximo
           </button>
         ) : (
           <button
-            type="submit"
-            disabled={submitting}
+            type="button"
+            onClick={handleSubmit}
+            disabled={!isStepValid(3) || submitting}
             className="cursor-pointer ml-auto bg-green-700 text-white font-bold px-6 py-3 rounded-xl hover:bg-green-600 transition-all disabled:opacity-70"
           >
             {submitting ? 'Enviando...' : 'Cadastrar'}
           </button>
         )}
       </div>
-
+      {errors.global && (
+        <p className="mt-4 text-red-700 text-center font-medium">{errors.global}</p>
+      )}
       {successMessage && <p className="mt-4 text-green-700 text-center">{successMessage}</p>}
     </form>
   )
