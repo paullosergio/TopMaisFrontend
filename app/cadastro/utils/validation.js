@@ -51,21 +51,32 @@ export const detectPixFromValue = value => {
 }
 
 export const validateBirthDate = ddmmyyyy => {
-  const m = ddmmyyyy.match(/^(\d{2})\/(\d{2})\/(\d{4})$/)
-  if (!m) return 'Use o formato dd/mm/aaaa'
-  const [_, dd, mm, yyyy] = m
-  const date = new Date(+yyyy, +mm - 1, +dd)
-  if (date.getFullYear() !== +yyyy || date.getMonth() !== +mm - 1 || date.getDate() !== +dd)
+  if (!ddmmyyyy) return 'Informe a data de nascimento'
+
+  const match = ddmmyyyy.match(/^(\d{2})\/(\d{2})\/(\d{4})$/)
+  if (!match) return 'Use o formato dd/mm/aaaa'
+
+  const [, dd, mm, yyyy] = match
+  const day = parseInt(dd, 10)
+  const month = parseInt(mm, 10) - 1 // zero-based
+  const year = parseInt(yyyy, 10)
+
+  const date = new Date(year, month, day)
+  if (date.getFullYear() !== year || date.getMonth() !== month || date.getDate() !== day) {
     return 'Data inválida'
+  }
+
+  const today = new Date()
+  if (date > today) return 'Data não pode ser no futuro'
 
   const age =
-    new Date().getFullYear() -
-    date.getFullYear() -
-    (new Date().getMonth() < date.getMonth() ||
-    (new Date().getMonth() === date.getMonth() && new Date().getDate() < date.getDate())
-      ? 1
-      : 0)
+    today.getFullYear() -
+    year -
+    (today.getMonth() < month || (today.getMonth() === month && today.getDate() < day) ? 1 : 0)
+
   if (age < 18) return 'É necessário ter pelo menos 18 anos'
+  if (age > 120) return 'Idade acima do limite permitido'
+
   return ''
 }
 
@@ -92,6 +103,7 @@ const validators = {
   street: v => (!v.trim() ? 'Informe a rua' : ''),
   neighborhood: v => (!v.trim() ? 'Informe o bairro' : ''),
   pix: v => (!v.trim() ? 'Informe a chave PIX' : ''),
+  password: v => (!v.trim() ? 'Informe sua senha' : ''),
 }
 
 export const validateForm = values => {

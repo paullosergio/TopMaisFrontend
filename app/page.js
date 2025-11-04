@@ -167,7 +167,8 @@ export default function Home() {
             <p className="text-xl text-white/90 mb-8">
               Junte-se a milhares de clientes satisfeitos
             </p>
-            <a href="/cadastro"
+            <a
+              href="/cadastro"
               className="bg-amber-800 text-orange-200 font-bold px-12 py-4 rounded-xl hover:bg-amber-700 transition-all duration-300 transform hover:scale-105 shadow-lg text-lg border border-stone-600/30"
             >
               Começar Agora

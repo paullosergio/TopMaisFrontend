@@ -16,7 +16,6 @@ export default function CadastroPage() {
             <Link href="/" className="hover:text-orange-200 transition-colors">
               Início
             </Link>
-  
           </nav>
         </div>
       </header>
