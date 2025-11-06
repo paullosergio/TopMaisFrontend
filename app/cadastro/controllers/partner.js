@@ -1,6 +1,6 @@
 export async function createPartner(partnerData) {
   try {
-    const response = await fetch('http://localhost:8000/api/partners/', {
+    const response = await fetch('https://apitop.topmaistop.com.br/api/partners/', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
