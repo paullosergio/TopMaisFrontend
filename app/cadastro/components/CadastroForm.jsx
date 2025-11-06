@@ -35,13 +35,14 @@ export default function CadastroForm() {
   const [successMessage, setSuccessMessage] = useState('')
   const [submitting, setSubmitting] = useState(false)
   const [step, setStep] = useState(1)
+  const [showModal, setShowModal] = useState(false)
 
   const totalSteps = 3
 
   const stepFields = {
-    1: ['name', 'phone', 'cpf', 'birthDate', 'email', 'password'],
+    1: ['name', 'phone', 'cpf', 'birthDate', 'email', 'pix'],
     2: ['zipCode', 'number'],
-    3: ['pix'],
+    3: ['password'],
   }
 
   const handleChange = ({ target: { name, value } }) => {
@@ -138,24 +139,20 @@ export default function CadastroForm() {
     setSubmitting(true)
     try {
       const payload = { ...formValues, birthDate: toIsoDate(formValues.birthDate) }
-
-      const data = await createPartner(payload)
+        const data = await createPartner(payload)
 
       if (data.success) {
         setSuccessMessage('Cadastro realizado com sucesso!')
+        setShowModal(true)
+        setFormValues(initial)
         setStep(1)
-        setFormValues(initial) // opcional
-      }
-
-      else if (data.errors) {
+      } else if (data.errors) {
         const mappedErrors = Object.entries(data.errors).reduce((acc, [key, val]) => {
           acc[key] = Array.isArray(val) ? val.join(', ') : val
           return acc
         }, {})
         setErrors(mappedErrors)
-      }
-
-      else if (data.error) {
+      } else if (data.error) {
         setErrors({ global: data.error })
       }
     } catch (error) {
@@ -163,8 +160,6 @@ export default function CadastroForm() {
       setErrors({ global: error.message || 'Erro inesperado. Tente novamente.' })
     } finally {
       setSubmitting(false)
-      setTimeout(() => setSuccessMessage(''), 3000)
-      setTimeout(() => setErrors(''), 3000)
     }
   }
 
@@ -173,160 +168,189 @@ export default function CadastroForm() {
     return requiredFields.every(f => formValues[f] && !errors[f])
   }
 
+  const closeModal = () => {
+    setShowModal(false)
+    window.location.href = '/' // redireciona para a página raiz
+  }
+
   return (
-    <form
-      onSubmit={e => e.preventDefault()}
-      className="bg-white rounded-2xl p-6 md:p-8 shadow-xl border border-stone-600/20 max-w-2xl mx-auto"
-    >
-      <h2 className="text-xl font-bold mb-6 text-center text-amber-800">
-        Etapa {step} de {totalSteps}
-      </h2>
+    <>
+      <form
+        onSubmit={e => e.preventDefault()}
+        className="bg-white rounded-2xl p-6 md:p-8 shadow-xl border border-stone-600/20 max-w-2xl mx-auto"
+      >
+        <h2 className="text-xl font-bold mb-6 text-center text-amber-800">
+          Etapa {step} de {totalSteps}
+        </h2>
 
-      {/* === ETAPA 1: Dados Pessoais === */}
-      {step === 1 && (
-        <div className="grid md:grid-cols-2 gap-4">
-          <InputField
-            label="Nome completo"
-            name="name"
-            value={formValues.name}
-            onChange={handleChange}
-            error={errors.name}
-          />
-          <MaskedInputField
-            label="Telefone"
-            name="phone"
-            mask="(00) 00000-0000"
-            value={formValues.phone}
-            onAccept={v => handleChange({ target: { name: 'phone', value: v } })}
-            error={errors.phone}
-          />
-          <MaskedInputField
-            label="CPF"
-            name="cpf"
-            mask="000.000.000-00"
-            value={formValues.cpf}
-            onAccept={v => handleChange({ target: { name: 'cpf', value: v } })}
-            error={errors.cpf}
-          />
-          <InputField
-            label="RG"
-            name="rg"
-            value={formValues.rg}
-            onChange={handleChange}
-            error={errors.rg}
-          />
-          <MaskedInputField
-            label="Data de nascimento"
-            name="birthDate"
-            mask="00/00/0000"
-            unmask={false}
-            value={formValues.birthDate}
-            onAccept={v => handleChange({ target: { name: 'birthDate', value: v } })}
-            error={errors.birthDate}
-          />
-          <InputField
-            label="E-mail"
-            name="email"
-            type="email"
-            value={formValues.email}
-            onChange={handleChange}
-            error={errors.email}
-          />
-          <InputField
-            label="Senha"
-            name="password"
-            type="password"
-            value={formValues.password}
-            onChange={handleChange}
-            error={errors.password}
-          />
-        </div>
-      )}
+        {/* === ETAPA 1 === */}
+        {step === 1 && (
+          <div className="grid md:grid-cols-2 gap-4">
+            <InputField
+              label="Nome completo"
+              name="name"
+              value={formValues.name}
+              onChange={handleChange}
+              error={errors.name}
+            />
+            <MaskedInputField
+              label="Telefone"
+              name="phone"
+              mask="(00) 00000-0000"
+              value={formValues.phone}
+              onAccept={v => handleChange({ target: { name: 'phone', value: v } })}
+              error={errors.phone}
+            />
+            <MaskedInputField
+              label="CPF"
+              name="cpf"
+              mask="000.000.000-00"
+              value={formValues.cpf}
+              onAccept={v => handleChange({ target: { name: 'cpf', value: v } })}
+              error={errors.cpf}
+            />
+            <InputField
+              label="RG"
+              name="rg"
+              value={formValues.rg}
+              onChange={handleChange}
+              error={errors.rg}
+            />
+            <MaskedInputField
+              label="Data de nascimento"
+              name="birthDate"
+              mask="00/00/0000"
+              unmask={false}
+              value={formValues.birthDate}
+              onAccept={v => handleChange({ target: { name: 'birthDate', value: v } })}
+              error={errors.birthDate}
+            />
+            <InputField
+              label="E-mail"
+              name="email"
+              type="email"
+              value={formValues.email}
+              onChange={handleChange}
+              error={errors.email}
+            />
 
-      {/* === ETAPA 2: Endereço === */}
-      {step === 2 && (
-        <div className="grid md:grid-cols-2 gap-4">
-          <MaskedInputField
-            label="CEP"
-            name="zipCode"
-            mask="00000-000"
-            value={formValues.zipCode}
-            onAccept={v => handleChange({ target: { name: 'zipCode', value: v } })}
-            error={errors.zipCode}
-          />
-          <InputField
-            label="Número"
-            name="number"
-            value={formValues.number}
-            onChange={handleChange}
-            error={errors.number}
-          />
-          <InputField label="Rua" name="street" value={formValues.street} disabled />
-          <InputField label="Bairro" name="neighborhood" value={formValues.neighborhood} disabled />
-          <InputField label="Cidade" name="city" value={formValues.city} disabled />
-          <InputField label="UF" name="uf" value={formValues.uf} disabled />
-        </div>
-      )}
-
-      {/* === ETAPA 3: PIX === */}
-      {step === 3 && (
-        <div className="grid md:grid-cols-2 gap-4">
-          <InputField
-            label="Chave PIX"
-            name="pix"
-            value={formValues.pix}
-            onChange={handleChange}
-            error={errors.pix}
-          />
-          <InputField
-            label="Tipo Chave PIX"
-            name="pixType"
-            value={(formValues.pixType || '').toUpperCase()}
-            disabled
-          />
-        </div>
-      )}
-
-      {/* === BOTÕES === */}
-      <div className="mt-6 flex justify-between">
-        {step > 1 && (
-          <button
-            type="button"
-            onClick={() => setStep(step - 1)}
-            className="cursor-pointer bg-stone-300 text-slate-800 px-6 py-2 rounded-xl"
-          >
-            Voltar
-          </button>
+            <InputField
+              label="Chave PIX"
+              name="pix"
+              value={formValues.pix}
+              onChange={handleChange}
+              error={errors.pix}
+            />
+            <InputField
+              label="Tipo Chave PIX"
+              name="pixType"
+              value={(formValues.pixType || '').toUpperCase()}
+              disabled
+            />
+          </div>
         )}
 
-        {step < totalSteps ? (
-          <button
-            type="button"
-            onClick={handleNext}
-            disabled={!isStepValid(step)}
-            className={`cursor-pointer ml-auto font-bold px-6 py-3 rounded-xl transition-all ${
-              isStepValid(step)
-                ? 'bg-amber-800 text-orange-100 hover:bg-amber-700'
-                : 'bg-gray-400 text-gray-200 cursor-not-allowed'
-            }`}
-          >
-            Próximo
-          </button>
-        ) : (
-          <button
-            type="button"
-            onClick={handleSubmit}
-            disabled={!isStepValid(3) || submitting}
-            className="cursor-pointer ml-auto bg-green-700 text-white font-bold px-6 py-3 rounded-xl hover:bg-green-600 transition-all disabled:opacity-70"
-          >
-            {submitting ? 'Enviando...' : 'Cadastrar'}
-          </button>
+        {/* === ETAPA 2 === */}
+        {step === 2 && (
+          <div className="grid md:grid-cols-2 gap-4">
+            <MaskedInputField
+              label="CEP"
+              name="zipCode"
+              mask="00000-000"
+              value={formValues.zipCode}
+              onAccept={v => handleChange({ target: { name: 'zipCode', value: v } })}
+              error={errors.zipCode}
+            />
+            <InputField
+              label="Número"
+              name="number"
+              value={formValues.number}
+              onChange={handleChange}
+              error={errors.number}
+            />
+            <InputField label="Rua" name="street" value={formValues.street} disabled />
+            <InputField
+              label="Bairro"
+              name="neighborhood"
+              value={formValues.neighborhood}
+              disabled
+            />
+            <InputField label="Cidade" name="city" value={formValues.city} disabled />
+            <InputField label="UF" name="uf" value={formValues.uf} disabled />
+          </div>
         )}
-      </div>
-      {errors.global && (
-        <p className="mt-4 text-red-700 text-center font-medium">{errors.global}</p>
+
+        {/* === ETAPA 3 === */}
+        {step === 3 && (
+          <div className="grid md:grid-cols-2 gap-4">
+            <InputField
+              label="Senha"
+              name="password"
+              type="password"
+              value={formValues.password}
+              onChange={handleChange}
+              error={errors.password}
+            />
+          </div>
+        )}
+
+        {/* === BOTÕES === */}
+        <div className="mt-6 flex justify-between">
+          {step > 1 && (
+            <button
+              type="button"
+              onClick={() => setStep(step - 1)}
+              className="cursor-pointer bg-stone-300 text-slate-800 px-6 py-2 rounded-xl"
+            >
+              Voltar
+            </button>
+          )}
+
+          {step < totalSteps ? (
+            <button
+              type="button"
+              onClick={handleNext}
+              disabled={!isStepValid(step)}
+              className={`cursor-pointer ml-auto font-bold px-6 py-3 rounded-xl transition-all ${
+                isStepValid(step)
+                  ? 'bg-amber-800 text-orange-100 hover:bg-amber-700'
+                  : 'bg-gray-400 text-gray-200 cursor-not-allowed'
+              }`}
+            >
+              Próximo
+            </button>
+          ) : (
+            <button
+              type="button"
+              onClick={handleSubmit}
+              disabled={!isStepValid(3) || submitting}
+              className="cursor-pointer ml-auto bg-green-700 text-white font-bold px-6 py-3 rounded-xl hover:bg-green-600 transition-all disabled:opacity-70"
+            >
+              {submitting ? 'Enviando...' : 'Cadastrar'}
+            </button>
+          )}
+        </div>
+        {errors.global && (
+          <p className="mt-4 text-red-700 text-center font-medium">{errors.global}</p>
+        )}
+      </form>
+
+      {/* === MODAL DE SUCESSO === */}
+      {showModal && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-2xl shadow-2xl p-8 text-center max-w-sm">
+            <h3 className="text-2xl font-semibold text-green-700 mb-3">🎉 Sucesso!</h3>
+            <p className="text-gray-700 mb-6">{successMessage || 'Cadastro concluído!'}</p>
+            <button
+              type="button"
+              onClick={closeModal}
+              className="cursor-pointer bg-green-700 text-white px-6 py-2 rounded-lg font-medium hover:bg-green-600 transition-all"
+            >
+              OK
+            </button>
+          </div>
+        </div>
       )}
-      {successMessage && <p className="mt-4 text-green-700 text-center">{successMessage}</p>}
-    </form>
+    </>
   )
 }
