@@ -1,188 +1,432 @@
+'use client'
+
+import Image from 'next/image'
+import { useEffect, useState } from 'react'
+
 export default function Home() {
+  const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const [isScrolled, setIsScrolled] = useState(false)
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 50)
+    }
+    window.addEventListener('scroll', handleScroll)
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [])
+
+  const aboutContent = {
+    title: 'Especialistas em Crédito CLT',
+    intro:
+      'A Top Mais Top é uma fintech especializada em crédito CLT, voltada para o setor privado, ou seja, para trabalhadores de carteira assinada.',
+    highlights: [
+      {
+        icon: '🎯',
+        title: 'Referência no Mercado',
+        description:
+          'Somos referência no universo de correspondentes bancários, oferecendo um sistema próprio que facilita o cadastramento de equipes.',
+      },
+      {
+        icon: '⚙️',
+        title: 'Gestão Eficiente',
+        description:
+          'Facilitamos a gestão eficiente dos pagamentos, permitindo que reduzam custos operacionais e tributários.',
+      },
+      {
+        icon: '💳',
+        title: 'Modelo Flexível',
+        description:
+          'Nossos parceiros podem optar por um modelo em que pagamos diretamente suas equipes, de forma simples e automatizada.',
+      },
+    ],
+    conclusion:
+      'Transformamos a rotina dos correspondentes bancários com tecnologia moderna, eficiência real e modelo de negócio inovador.',
+  }
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-teal-600 via-slate-800 to-stone-600">
+    <div className="min-h-screen bg-white">
       {/* Header */}
-      <header className="px-6 py-4">
-        <div className="max-w-7xl mx-auto flex justify-between items-center">
+      <header
+        className={`fixed top-0 w-full z-50 transition-all duration-300 ${
+          isScrolled
+            ? 'bg-white/95 backdrop-blur-md shadow-lg border-b border-slate-200'
+            : 'bg-white/50 backdrop-blur-md'
+        }`}
+      >
+        <div className="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
           <div className="flex items-center space-x-3">
-            <div className="w-10 h-10 bg-orange-200 rounded-lg flex items-center justify-center">
-              <span className="text-slate-800 font-bold text-xl">T</span>
+            <Image
+              src="/icon.png"
+              alt="Top Mais Top"
+              width={40}
+              height={40}
+              className="object-contain"
+            />
+            <div className="flex flex-col">
+              <span className="text-xs text-teal-600 font-semibold">top</span>
+              <span className="text-lg font-bold text-slate-800">Mais Top</span>
             </div>
-            <span className="text-white text-xl font-bold">Top Mais Top</span>
           </div>
-          {/* <nav className="hidden md:flex space-x-8">
-            <a href="#sobre" className="text-white/90 hover:text-white transition-colors">
-              Sobre
-            </a>
-            <a href="#servicos" className="text-white/90 hover:text-white transition-colors">
-              Serviços
-            </a>
-            <a href="#contato" className="text-white/90 hover:text-white transition-colors">
-              Contato
-            </a>
-          </nav> */}
+
+          <nav className="hidden md:flex space-x-1">
+            {['Sobre', 'Produtos', 'Diferenciais', 'Parceiros'].map(item => (
+              <a
+                key={item}
+                href={`#${item.toLowerCase()}`}
+                className="px-4 py-2 text-slate-700 hover:text-teal-600 hover:bg-teal-50 rounded-lg transition-all duration-300 font-medium text-sm"
+              >
+                {item}
+              </a>
+            ))}
+          </nav>
+
+          <button
+            type="button"
+            onClick={() => setIsMenuOpen(!isMenuOpen)}
+            className="md:hidden p-2 hover:bg-slate-100 rounded-lg transition-colors"
+          >
+            <span className="text-2xl">{isMenuOpen ? '✕' : '☰'}</span>
+          </button>
+
+          <a
+            href="/cadastro"
+            className="hidden md:block px-6 py-2.5 bg-teal-600 hover:bg-teal-700 text-white rounded-lg font-semibold transition-all duration-300 transform hover:scale-105"
+          >
+            Cadastro
+          </a>
         </div>
+
+        {isMenuOpen && (
+          <div className="md:hidden bg-white border-t border-slate-200 py-4 px-6 space-y-3">
+            {['Sobre', 'Produtos', 'Diferenciais', 'Parceiros'].map(item => (
+              <a
+                key={item}
+                href={`#${item.toLowerCase()}`}
+                className="block py-2 text-slate-700 hover:text-teal-600 font-medium"
+                onClick={() => setIsMenuOpen(false)}
+              >
+                {item}
+              </a>
+            ))}
+            <a
+              href="/cadastro"
+              className="block w-full px-6 py-2.5 bg-teal-600 hover:bg-teal-700 text-white text-center rounded-lg font-semibold transition-all duration-300"
+            >
+              Cadastro
+            </a>
+          </div>
+        )}
       </header>
 
-      {/* Hero Section */}
-      <main className="px-6 py-16">
-        <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-16">
-            <h1 className="text-5xl md:text-7xl font-bold text-white mb-6 leading-tight">
-              Crédito Consignado
-              <span className="block text-orange-200">Inteligente</span>
-            </h1>
-            <p className="text-xl md:text-2xl text-white/90 mb-8 max-w-3xl mx-auto leading-relaxed">
-              Conectamos você às melhores ofertas de crédito consignado do mercado.
-              <span className="text-orange-200 font-semibold"> Simples, rápido e seguro.</span>
-            </p>
+      <main className="pt-24">
+        {/* Seção Sobre - Hero */}
+        <section
+          id="sobre"
+          className="py-24 bg-gradient-to-b from-white via-blue-50 to-blue-100 border-b-4 border-blue-400"
+        >
+          <div className="max-w-7xl mx-auto px-6">
+            <div className="grid md:grid-cols-2 gap-16 items-center">
+              <div>
+                <div className="mb-12">
+                  <h2 className="text-5xl md:text-6xl font-bold text-slate-900 mb-6 leading-tight">
+                    {aboutContent.title}
+                  </h2>
+                  <p className="text-xl text-slate-600 leading-relaxed">{aboutContent.intro}</p>
+                </div>
+
+                <div className="space-y-4">
+                  {aboutContent.highlights.map((highlight, index) => (
+                    <div
+                      key={index}
+                      className="bg-white rounded-xl p-6 border border-slate-200 hover:border-blue-400 hover:shadow-lg transition-all duration-300 hover:-translate-y-1"
+                    >
+                      <div className="flex items-start gap-4">
+                        <div className="text-3xl flex-shrink-0">{highlight.icon}</div>
+                        <div>
+                          <h3 className="text-lg font-bold text-slate-900 mb-1">
+                            {highlight.title}
+                          </h3>
+                          <p className="text-sm text-slate-600 leading-relaxed">
+                            {highlight.description}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div className="relative flex items-center justify-center min-h-[500px]">
+                <div className="relative w-full max-w-md aspect-square rounded-3xl overflow-hidden shadow-2xl">
+                  <div className="absolute inset-0 bg-gradient-to-br from-teal-400 to-blue-600 opacity-10 z-10"></div>
+                  <Image
+                    src="/joia.png"
+                    alt="Joia Top Mais Top"
+                    fill
+                    className="object-contain"
+                    priority
+                  />
+                </div>
+              </div>
+            </div>
           </div>
+        </section>
 
-          {/* Features Grid */}
-          <div className="grid md:grid-cols-3 gap-8 mb-16">
-            <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-8 text-center hover:bg-orange-200/20 transition-all duration-300 border border-stone-600/30">
-              <div className="w-16 h-16 bg-orange-200 rounded-full flex items-center justify-center mx-auto mb-6">
-                <span className="text-2xl text-slate-800">⚡</span>
-              </div>
-              <h3 className="text-xl font-bold text-white mb-4">Aprovação Rápida</h3>
-              <p className="text-white/80">Processo simplificado com aprovação em até 24 horas</p>
-            </div>
-
-            <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-8 text-center hover:bg-orange-200/20 transition-all duration-300 border border-stone-600/30">
-              <div className="w-16 h-16 bg-amber-800 rounded-full flex items-center justify-center mx-auto mb-6">
-                <span className="text-2xl text-orange-200">🔒</span>
-              </div>
-              <h3 className="text-xl font-bold text-white mb-4">100% Seguro</h3>
-              <p className="text-white/80">Seus dados protegidos com tecnologia de ponta</p>
-            </div>
-
-            <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-8 text-center hover:bg-orange-200/20 transition-all duration-300 border border-stone-600/30">
-              <div className="w-16 h-16 bg-teal-600 rounded-full flex items-center justify-center mx-auto mb-6">
-                <span className="text-2xl text-orange-200">💰</span>
-              </div>
-              <h3 className="text-xl font-bold text-white mb-4">Melhores Taxas</h3>
-              <p className="text-white/80">Negociamos as melhores condições do mercado para você</p>
-            </div>
-          </div>
-
-          {/* Benefits Section */}
-          <div className="bg-white rounded-3xl p-8 md:p-12 shadow-2xl border border-stone-600/20">
-            <div className="text-center mb-12">
-              <h2 className="text-4xl font-bold text-slate-800 mb-6">
-                Por que escolher a Top Mais Top?
-              </h2>
-              <p className="text-xl text-stone-600 max-w-3xl mx-auto">
-                Somos especialistas em conectar você às melhores oportunidades de crédito consignado
+        {/* Seção Produtos */}
+        <section
+          id="produtos"
+          className="py-24 bg-gradient-to-b from-white via-teal-50 to-teal-100 border-b-4 border-teal-500"
+        >
+          <div className="max-w-7xl mx-auto px-6">
+            <div className="text-center mb-20">
+              <h2 className="text-5xl md:text-6xl font-bold text-slate-900 mb-6">Produtos</h2>
+              <p className="text-xl text-slate-600 max-w-2xl mx-auto leading-relaxed">
+                Informações claras sobre os produtos e soluções que oferecemos para o seu negócio
+                crescer.
               </p>
             </div>
 
-            <div className="grid md:grid-cols-2 gap-8">
+            <div className="grid md:grid-cols-2 gap-16 items-center">
               <div className="space-y-6">
-                <div className="flex items-start space-x-4">
-                  <div className="w-8 h-8 bg-teal-600 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
-                    <span className="text-orange-200 text-sm">✓</span>
-                  </div>
-                  <div>
-                    <h3 className="text-lg font-semibold text-slate-800 mb-2">
-                      Análise Personalizada
-                    </h3>
-                    <p className="text-stone-600">
-                      Avaliamos seu perfil e encontramos a proposta ideal para suas necessidades
-                    </p>
-                  </div>
-                </div>
-
-                <div className="flex items-start space-x-4">
-                  <div className="w-8 h-8 bg-[#109b96] rounded-full flex items-center justify-center flex-shrink-0 mt-1">
-                    <span className="text-white text-sm">✓</span>
-                  </div>
-                  <div>
-                    <h3 className="text-lg font-semibold text-slate-800 mb-2">Zero Burocracia</h3>
-                    <p className="text-stone-600">Processo 100% digital, sem papelada ou filas</p>
-                  </div>
-                </div>
-
-                <div className="flex items-start space-x-4">
-                  <div className="w-8 h-8 bg-teal-600 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
-                    <span className="text-orange-200 text-sm">✓</span>
-                  </div>
-                  <div>
-                    <h3 className="text-lg font-semibold text-slate-800 mb-2">Atendimento 24/7</h3>
-                    <p className="text-stone-600">
-                      Suporte especializado sempre disponível para você
-                    </p>
-                  </div>
-                </div>
+                {[
+                  {
+                    icon: '🏢',
+                    color: 'teal',
+                    title: 'Múltiplas Averbadoras',
+                    desc: 'Trabalhamos com múltiplas averbadoras em um único sistema, diferenciando-nos de outras fintechs que trabalham com apenas uma.',
+                  },
+                  {
+                    icon: '✓',
+                    color: 'orange',
+                    title: 'Sem Recadastramento',
+                    desc: 'Se um cliente não for aprovado em uma averbadora, ele tenta outra sem necessidade de recadastramento.',
+                  },
+                  {
+                    icon: '📈',
+                    color: 'green',
+                    title: 'Maiores Chances de Aprovação',
+                    desc: 'Aumentamos as chances de aprovação e simplificamos o processo para seus clientes.',
+                  },
+                ].map((item, i) => {
+                  const colorMap = {
+                    teal: 'from-teal-50 to-slate-50 border-teal-200 bg-teal-600',
+                    orange: 'from-orange-50 to-slate-50 border-orange-200 bg-orange-500',
+                    green: 'from-green-50 to-slate-50 border-green-200 bg-green-600',
+                  }
+                  const [bgGradient, bgColor] = colorMap[item.color].split(' bg-')
+                  return (
+                    <div
+                      key={i}
+                      className={`bg-gradient-to-br ${bgGradient} rounded-2xl p-8 border ${bgGradient.split('border-')[1] || ''} hover:shadow-lg transition-all duration-300`}
+                    >
+                      <div className="flex items-start gap-4">
+                        <div
+                          className={`w-14 h-14 bg-${bgColor} rounded-xl flex items-center justify-center flex-shrink-0 text-white text-2xl shadow-lg`}
+                        >
+                          {item.icon}
+                        </div>
+                        <div>
+                          <h3 className="text-xl font-bold text-slate-900 mb-2">{item.title}</h3>
+                          <p className="text-slate-600 leading-relaxed">{item.desc}</p>
+                        </div>
+                      </div>
+                    </div>
+                  )
+                })}
               </div>
 
-              <div className="space-y-6">
-                <div className="flex items-start space-x-4">
-                  <div className="w-8 h-8 bg-[#109b96] rounded-full flex items-center justify-center flex-shrink-0 mt-1">
-                    <span className="text-white text-sm">✓</span>
+              <div className="relative">
+                <div className="bg-gradient-to-br from-slate-900 to-teal-900 rounded-3xl p-12 min-h-[500px] flex flex-col items-center justify-center shadow-2xl overflow-hidden relative">
+                  <div className="absolute inset-0 opacity-20">
+                    <div className="absolute top-10 right-10 w-40 h-40 bg-white rounded-full blur-3xl"></div>
+                    <div className="absolute bottom-10 left-10 w-40 h-40 bg-teal-400 rounded-full blur-3xl"></div>
                   </div>
-                  <div>
-                    <h3 className="text-lg font-semibold text-slate-800 mb-2">
-                      Transparência Total
-                    </h3>
-                    <p className="text-stone-600">
-                      Todas as taxas e condições explicadas de forma clara
-                    </p>
-                  </div>
-                </div>
 
-                <div className="flex items-start space-x-4">
-                  <div className="w-8 h-8 bg-teal-600 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
-                    <span className="text-orange-200 text-sm">✓</span>
-                  </div>
-                  <div>
-                    <h3 className="text-lg font-semibold text-slate-800 mb-2">
-                      Comparação Inteligente
-                    </h3>
-                    <p className="text-stone-600">
-                      Avaliamos centenas de opções para encontrar a melhor
+                  <div className="relative z-10 text-center">
+                    <div className="text-7xl mb-8 animate-pulse">🔗</div>
+                    <h4 className="text-3xl font-bold text-white mb-4">Sistema Integrado</h4>
+                    <p className="text-teal-100 text-lg leading-relaxed max-w-sm mb-10">
+                      Uma plataforma inteligente que conecta múltiplas averbadoras
                     </p>
-                  </div>
-                </div>
 
-                <div className="flex items-start space-x-4">
-                  <div className="w-8 h-8 bg-[#109b96] rounded-full flex items-center justify-center flex-shrink-0 mt-1">
-                    <span className="text-white text-sm">✓</span>
-                  </div>
-                  <div>
-                    <h3 className="text-lg font-semibold text-slate-800 mb-2">
-                      Acompanhamento Completo
-                    </h3>
-                    <p className="text-stone-600">Estamos com você em cada etapa do processo</p>
+                    <div className="mt-8 grid grid-cols-3 gap-3">
+                      {['Averbadora 1', 'Averbadora 2', 'Averbadora 3'].map((item, i) => (
+                        <div
+                          key={i}
+                          className="bg-white/15 backdrop-blur-md rounded-lg p-4 border border-white/30 hover:border-teal-300/50 hover:bg-white/25 transition-all duration-300"
+                        >
+                          <div className="text-sm font-semibold text-white">{item}</div>
+                          <div className="text-xs text-teal-200 mt-2">✓ Integrada</div>
+                        </div>
+                      ))}
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
           </div>
+        </section>
 
-          {/* CTA Section */}
-          <div className="text-center mt-16">
-            <h2 className="text-3xl font-bold text-white mb-6">
-              Pronto para ter o melhor crédito consignado?
-            </h2>
-            <p className="text-xl text-white/90 mb-8">
-              Junte-se a milhares de clientes satisfeitos
-            </p>
-            <a
-              href="/cadastro"
-              className="bg-amber-800 text-orange-200 font-bold px-12 py-4 rounded-xl hover:bg-amber-700 transition-all duration-300 transform hover:scale-105 shadow-lg text-lg border border-stone-600/30"
-            >
-              Começar Agora
-            </a>
+        {/* Seção Diferenciais */}
+        <section
+          id="diferenciais"
+          className="py-24 bg-gradient-to-b from-white via-orange-50 to-orange-100 border-b-4 border-orange-400"
+        >
+          <div className="max-w-7xl mx-auto px-6">
+            <div className="text-center mb-20">
+              <h2 className="text-5xl md:text-6xl font-bold text-slate-900 mb-6">
+                Por Que Somos Diferentes?
+              </h2>
+              <p className="text-xl text-slate-600 max-w-2xl mx-auto leading-relaxed">
+                Descubra o que nos torna referência no mercado de crédito CLT
+              </p>
+            </div>
+
+            <div className="grid md:grid-cols-2 gap-12 items-center mb-16">
+              <div>
+                <h3 className="text-3xl font-bold text-slate-900 mb-8">Nossos Diferenciais</h3>
+                <ul className="space-y-4">
+                  {[
+                    'Sistema próprio inovador',
+                    'Cadastramento simplificado de equipes',
+                    'Gestão eficiente de pagamentos',
+                    'Redução de custos operacionais e tributários',
+                    'Modelo flexível de parcerias',
+                    'Pagamento automático direto',
+                  ].map((item, i) => (
+                    <li key={i} className="flex items-center gap-4 group">
+                      <div className="w-8 h-8 bg-orange-500 rounded-full flex items-center justify-center flex-shrink-0 shadow-lg group-hover:scale-110 transition-transform">
+                        <span className="text-white text-lg font-bold">✓</span>
+                      </div>
+                      <span className="text-lg text-slate-700 font-medium group-hover:text-slate-900 transition-colors">
+                        {item}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              <div className="bg-white rounded-3xl p-12 border-2 border-orange-200 shadow-xl">
+                <h4 className="text-2xl font-bold text-slate-900 mb-6 flex items-center gap-2">
+                  <span className="text-3xl">🎯</span>
+                  Nossa Missão
+                </h4>
+                <p className="text-slate-600 leading-relaxed mb-8 text-lg">
+                  {aboutContent.conclusion}
+                </p>
+                <div className="pt-6 border-t-2 border-orange-200">
+                  <p className="text-slate-500 leading-relaxed">
+                    Transformando o mercado de crédito CLT com tecnologia, eficiência e inovação
+                    para criar oportunidades reais de crescimento.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* CTA Section */}
+            <div className="bg-gradient-to-r from-teal-600 to-teal-700 rounded-3xl p-12 text-center shadow-2xl">
+              <h3 className="text-3xl md:text-4xl font-bold text-white mb-4">
+                Pronto para fazer parte da revolução?
+              </h3>
+              <p className="text-teal-100 mb-10 text-lg max-w-2xl mx-auto">
+                Junte-se a centenas de parceiros que já estão crescendo com a Top Mais Top
+              </p>
+              <a
+                href="/cadastro"
+                className="inline-flex items-center justify-center gap-3 px-12 py-4 bg-white hover:bg-slate-100 text-teal-600 font-bold rounded-xl transition-all duration-300 transform hover:scale-105 shadow-xl hover:shadow-2xl text-lg"
+              >
+                <span>👑</span>
+                <span>Começar Agora</span>
+                <span>→</span>
+              </a>
+            </div>
           </div>
-        </div>
-      </main>
+        </section>
 
-      {/* Footer */}
-      <footer className="bg-black/20 backdrop-blur-sm py-8 mt-16">
-        <div className="max-w-7xl mx-auto px-6 text-center">
-          <p className="text-white/80">© 2025 Top Mais Top. Todos os direitos reservados.</p>
-        </div>
-      </footer>
+        {/* Footer */}
+        <footer className="bg-slate-900 text-white py-16">
+          <div className="max-w-7xl mx-auto px-6">
+            <div className="grid md:grid-cols-4 gap-12 mb-12">
+              <div>
+                <div className="flex items-center space-x-2 mb-4">
+                  <div className="w-10 h-10 bg-teal-600 rounded-lg flex items-center justify-center">
+                    <span>👑</span>
+                  </div>
+                  <span className="text-xl font-bold">Top Mais Top</span>
+                </div>
+                <p className="text-slate-400 text-sm leading-relaxed">
+                  Revolucionando o mercado de crédito CLT com tecnologia e inovação.
+                </p>
+              </div>
+              <div>
+                <h4 className="font-bold mb-4 text-teal-400">Navegação</h4>
+                <ul className="space-y-2 text-slate-400 text-sm">
+                  <li>
+                    <a href="#sobre" className="hover:text-white transition-colors">
+                      Sobre
+                    </a>
+                  </li>
+                  <li>
+                    <a href="#produtos" className="hover:text-white transition-colors">
+                      Produtos
+                    </a>
+                  </li>
+                  <li>
+                    <a href="#diferenciais" className="hover:text-white transition-colors">
+                      Diferenciais
+                    </a>
+                  </li>
+                </ul>
+              </div>
+              <div>
+                <h4 className="font-bold mb-4 text-teal-400">Legal</h4>
+                <ul className="space-y-2 text-slate-400 text-sm">
+                  <li>
+                    <a href="#" className="hover:text-white transition-colors">
+                      Privacidade
+                    </a>
+                  </li>
+                  <li>
+                    <a href="#" className="hover:text-white transition-colors">
+                      Termos
+                    </a>
+                  </li>
+                  <li>
+                    <a href="#" className="hover:text-white transition-colors">
+                      Contato
+                    </a>
+                  </li>
+                </ul>
+              </div>
+              <div>
+                <h4 className="font-bold mb-4 text-teal-400">Redes Sociais</h4>
+                <ul className="space-y-2 text-slate-400 text-sm">
+                  <li>
+                    <a href="#" className="hover:text-white transition-colors">
+                      LinkedIn
+                    </a>
+                  </li>
+                  <li>
+                    <a href="#" className="hover:text-white transition-colors">
+                      Instagram
+                    </a>
+                  </li>
+                  <li>
+                    <a href="#" className="hover:text-white transition-colors">
+                      Twitter
+                    </a>
+                  </li>
+                </ul>
+              </div>
+            </div>
+            <div className="text-center pt-8 border-t border-slate-700">
+              <p className="text-slate-400 text-sm">
+                © 2025 Top Mais Top. Todos os direitos reservados.
+              </p>
+            </div>
+          </div>
+        </footer>
+      </main>
     </div>
   )
 }

@@ -20,6 +20,11 @@ export const metadata = {
   authors: [{ name: 'Top Mais Top' }],
   viewport: 'width=device-width, initial-scale=1',
   robots: 'index, follow',
+  icons: {
+    icon: '/icon.png',
+    shortcut: '/icon.png', 
+    apple: '/icon.png',
+  },
   openGraph: {
     title: 'Top Mais Top - Crédito Consignado Inteligente',
     description:
