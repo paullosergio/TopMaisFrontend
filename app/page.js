@@ -47,7 +47,7 @@ export default function Home() {
     <div className="min-h-screen bg-white">
       {/* Header */}
       <header
-        className={`fixed top-0 w-full z-50 transition-all duration-300 ${
+        className={`fixed top-0 w-full z-50 transition-all duration-300 bg-gradient-to-b from-white via-blue-50 to-blue-100 ${
           isScrolled
             ? 'bg-white/95 backdrop-blur-md shadow-lg border-b border-slate-200'
             : 'bg-white/50 backdrop-blur-md'
@@ -58,14 +58,10 @@ export default function Home() {
             <Image
               src="/icon.png"
               alt="Top Mais Top"
-              width={40}
-              height={40}
+              width={60}
+              height={60}
               className="object-contain"
             />
-            <div className="flex flex-col">
-              <span className="text-xs text-teal-600 font-semibold">top</span>
-              <span className="text-lg font-bold text-slate-800">Mais Top</span>
-            </div>
           </div>
 
           <nav className="hidden md:flex space-x-1">
@@ -160,10 +156,10 @@ export default function Home() {
                 <div className="relative w-full max-w-md aspect-square rounded-3xl overflow-hidden shadow-2xl">
                   <div className="absolute inset-0 bg-gradient-to-br from-teal-400 to-blue-600 opacity-10 z-10"></div>
                   <Image
-                    src="/joia.png"
-                    alt="Joia Top Mais Top"
+                    src="/comissao.png"
+                    alt="Comissao Top Mais Top"
                     fill
-                    className="object-contain"
+                    className="object-fill"
                     priority
                   />
                 </div>
@@ -236,13 +232,15 @@ export default function Home() {
               </div>
 
               <div className="relative">
-                <div className="bg-gradient-to-br from-slate-900 to-teal-900 rounded-3xl p-12 min-h-[500px] flex flex-col items-center justify-center shadow-2xl overflow-hidden relative">
-                  <div className="absolute inset-0 opacity-20">
-                    <div className="absolute top-10 right-10 w-40 h-40 bg-white rounded-full blur-3xl"></div>
-                    <div className="absolute bottom-10 left-10 w-40 h-40 bg-teal-400 rounded-full blur-3xl"></div>
-                  </div>
+                <div className="relative rounded-3xl p-12 min-h-[370px] min-w-max flex flex-col items-center justify-center shadow-2xl overflow-hidden">
+                  {/* Imagem de fundo */}
+                  <Image src="/produtos.png" alt="Background" fill className="object-cover" priority />
 
-                  <div className="relative z-10 text-center">
+                  {/* Overlay opcional para escurecer a imagem */}
+                  {/* <div className="absolute inset-0 bg-black/40"></div> */}
+
+                  {/* Conteúdo */}
+                  {/* <div className="relative z-10 text-center">
                     <div className="text-7xl mb-8 animate-pulse">🔗</div>
                     <h4 className="text-3xl font-bold text-white mb-4">Sistema Integrado</h4>
                     <p className="text-teal-100 text-lg leading-relaxed max-w-sm mb-10">
@@ -260,7 +258,7 @@ export default function Home() {
                         </div>
                       ))}
                     </div>
-                  </div>
+                  </div> */}
                 </div>
               </div>
             </div>
