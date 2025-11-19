@@ -232,33 +232,10 @@ export default function Home() {
               </div>
 
               <div className="relative">
-                <div className="relative rounded-3xl p-12 min-h-[370px] min-w-max flex flex-col items-center justify-center shadow-2xl overflow-hidden">
+                <div className="relative rounded-3xl p-12 min-h-[480px] flex flex-col items-center justify-center shadow-2xl overflow-hidden">
                   {/* Imagem de fundo */}
-                  <Image src="/produtos.png" alt="Background" fill className="object-cover" priority />
+                  <Image src="/produtos.png" alt="Background" fill  priority />
 
-                  {/* Overlay opcional para escurecer a imagem */}
-                  {/* <div className="absolute inset-0 bg-black/40"></div> */}
-
-                  {/* Conteúdo */}
-                  {/* <div className="relative z-10 text-center">
-                    <div className="text-7xl mb-8 animate-pulse">🔗</div>
-                    <h4 className="text-3xl font-bold text-white mb-4">Sistema Integrado</h4>
-                    <p className="text-teal-100 text-lg leading-relaxed max-w-sm mb-10">
-                      Uma plataforma inteligente que conecta múltiplas averbadoras
-                    </p>
-
-                    <div className="mt-8 grid grid-cols-3 gap-3">
-                      {['Averbadora 1', 'Averbadora 2', 'Averbadora 3'].map((item, i) => (
-                        <div
-                          key={i}
-                          className="bg-white/15 backdrop-blur-md rounded-lg p-4 border border-white/30 hover:border-teal-300/50 hover:bg-white/25 transition-all duration-300"
-                        >
-                          <div className="text-sm font-semibold text-white">{item}</div>
-                          <div className="text-xs text-teal-200 mt-2">✓ Integrada</div>
-                        </div>
-                      ))}
-                    </div>
-                  </div> */}
                 </div>
               </div>
             </div>
