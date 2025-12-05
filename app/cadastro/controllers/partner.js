@@ -1,6 +1,8 @@
+import { getApiEndpoint } from '../../utils/api'
+
 export async function createPartner(partnerData) {
   try {
-    const response = await fetch('https://apitop.topmaistop.com.br/api/partners/', {
+    const response = await fetch(getApiEndpoint('/api/partners/'), {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
