@@ -1,5 +1,5 @@
 # Imagem base do Node (ajuste a versão se precisar)
-FROM node:20.17-slim
+FROM node:20-alpine
 
 WORKDIR /app
 

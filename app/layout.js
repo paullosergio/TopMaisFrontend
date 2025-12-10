@@ -18,11 +18,10 @@ export const metadata = {
   keywords:
     'crédito consignado, empréstimo, fintech, crédito pessoal, taxas baixas, aprovação rápida',
   authors: [{ name: 'Top Mais Top' }],
-  viewport: 'width=device-width, initial-scale=1',
   robots: 'index, follow',
   icons: {
     icon: '/icon.png',
-    shortcut: '/icon.png', 
+    shortcut: '/icon.png',
     apple: '/icon.png',
   },
   openGraph: {
@@ -32,6 +31,12 @@ export const metadata = {
     type: 'website',
     locale: 'pt_BR',
   },
+}
+
+
+export const viewport = {
+  width: 'device-width',
+  initialScale: 1,
 }
 
 export default function RootLayout({ children }) {
