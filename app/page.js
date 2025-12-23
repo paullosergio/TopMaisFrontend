@@ -85,7 +85,7 @@ export default function Home() {
           </button>
 
           <a
-            href="/cadastro"
+            href="https://app.topmaistop.com.br/cadastro-parceiros?ref=1766492220539x396710812009889800znt27dch"
             className="hidden md:block px-6 py-2.5 bg-teal-600 hover:bg-teal-700 text-white rounded-lg font-semibold transition-all duration-300 transform hover:scale-105"
           >
             Cadastro
@@ -105,7 +105,7 @@ export default function Home() {
               </a>
             ))}
             <a
-              href="/cadastro"
+              href="https://app.topmaistop.com.br/cadastro-parceiros?ref=1766492220539x396710812009889800znt27dch"
               className="block w-full px-6 py-2.5 bg-teal-600 hover:bg-teal-700 text-white text-center rounded-lg font-semibold transition-all duration-300"
             >
               Cadastro
@@ -307,7 +307,7 @@ export default function Home() {
                 Junte-se a centenas de parceiros que já estão crescendo com a Top Mais Top
               </p>
               <a
-                href="/cadastro"
+                href="https://app.topmaistop.com.br/cadastro-parceiros?ref=1766492220539x396710812009889800znt27dch"
                 className="inline-flex items-center justify-center gap-3 px-12 py-4 bg-white hover:bg-slate-100 text-teal-600 font-bold rounded-xl transition-all duration-300 transform hover:scale-105 shadow-xl hover:shadow-2xl text-lg"
               >
                 <span>👑</span>
