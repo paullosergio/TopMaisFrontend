@@ -2,6 +2,7 @@
 
 import Image from 'next/image'
 import { useEffect, useState } from 'react'
+import ScamWarningModal from './components/ScamWarningModal'
 
 export default function Home() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
@@ -45,6 +46,8 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-white">
+      <ScamWarningModal />
+
       {/* Header */}
       <header
         className={`fixed top-0 w-full z-50 transition-all duration-300 bg-gradient-to-b from-white via-blue-50 to-blue-100 ${
@@ -65,7 +68,7 @@ export default function Home() {
           </div>
 
           <nav className="hidden md:flex space-x-1">
-            {['Sobre', 'Produtos', 'Diferenciais', 'Parceiros'].map(item => (
+            {['Sobre', 'Produtos', 'Diferenciais'].map(item => (
               <a
                 key={item}
                 href={`#${item.toLowerCase()}`}
